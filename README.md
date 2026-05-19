@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SplitNota
 
-## Getting Started
+SplitNota adalah aplikasi web untuk scan nota makanan/minuman dan membagi tagihan berdasarkan item. Kamu bisa upload nota untuk discan AI atau input manual, lalu assign item ke peserta dan langsung dapat hasil split bill.
 
-First, run the development server:
+## Fitur Utama
+
+- Scan nota dari gambar/PDF (JPG, PNG, WEBP, PDF; max 5 MB).
+- Review dan edit hasil scan sebelum dihitung.
+- Input nota manual jika tidak ingin scan.
+- Assign item ke peserta dan hitung pajak, service, diskon otomatis.
+- Validasi pembagian item agar tidak kurang atau lebih dari qty.
+- Salin hasil split bill atau share ke WhatsApp.
+
+## Alur Penggunaan
+
+1. Buka /upload untuk scan nota atau pilih Input Manual.
+2. Periksa hasil dan konfirmasi.
+3. Tambahkan peserta dan alokasikan item.
+4. Salin hasil split bill atau share ke WhatsApp.
+
+## Routes
+
+- `/` landing page.
+- `/upload` upload dan scan nota.
+- `/manual` input nota manual.
+- `POST /api/ai/scan-receipt` endpoint scan AI.
+
+## Konfigurasi
+
+Buat file `.env.local` dan isi API key Gemini:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+GEMINI_API_KEY=your_api_key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Menjalankan Project
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Lalu buka http://localhost:3000
 
-## Learn More
+## NPM Scripts
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev` - jalankan dev server.
+- `npm run build` - build untuk production.
+- `npm run start` - jalankan server production.
+- `npm run lint` - linting.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js App Router
+- React 19
+- Tailwind CSS
+- shadcn/ui (Radix UI primitives)
+- Gemini API (Google GenAI SDK)
 
-## Deploy on Vercel
+## Developer
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Amirul Nur Cahyo (mahasiswa teknik informatika UNSRI angkatan 2024)
