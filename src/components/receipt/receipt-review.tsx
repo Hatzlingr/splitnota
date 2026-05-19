@@ -28,6 +28,8 @@ import type {
 type ReceiptReviewProps = {
   initialData: ReceiptScanResult
   onConfirm: (data: ConfirmedReceipt) => void
+  title?: string
+  confirmLabel?: string
 }
 
 function formatRupiah(value: number) {
@@ -38,7 +40,12 @@ function formatRupiah(value: number) {
   }).format(value || 0)
 }
 
-export function ReceiptReview({ initialData, onConfirm }: ReceiptReviewProps) {
+export function ReceiptReview({
+  initialData,
+  onConfirm,
+  title = "Konfirmasi Hasil Scan",
+  confirmLabel = "Konfirmasi Hasil Scan",
+}: ReceiptReviewProps) {
   const [merchantName, setMerchantName] = useState(
     initialData.merchant_name || ""
   )
@@ -111,7 +118,7 @@ export function ReceiptReview({ initialData, onConfirm }: ReceiptReviewProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Konfirmasi Hasil Scan</CardTitle>
+        <CardTitle>{title}</CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -272,7 +279,7 @@ export function ReceiptReview({ initialData, onConfirm }: ReceiptReviewProps) {
         </div>
 
         <Button type="button" className="w-full" onClick={handleConfirm}>
-          Konfirmasi Hasil Scan
+          {confirmLabel}
         </Button>
       </CardContent>
     </Card>

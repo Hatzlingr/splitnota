@@ -1,6 +1,7 @@
 "use client"
 
 import { FormEvent, useState } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -131,6 +132,12 @@ export default function UploadPage() {
                 {loading ? "Sedang scan nota..." : "Scan Nota"}
               </Button>
             </form>
+
+            <div className="mt-4">
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/manual">Input Manual</Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
