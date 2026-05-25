@@ -1,6 +1,9 @@
+// Tandai file ini sebagai client component
 "use client"
 
+// Hook React untuk state
 import { useState } from "react"
+// Komponen UI
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,19 +22,26 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+// Tipe data nota
 import type {
   ConfirmedReceipt,
   ReceiptItem,
   ReceiptScanResult,
 } from "@/types/receipt"
 
+// Props untuk komponen review nota
 type ReceiptReviewProps = {
+  // Data awal hasil scan
   initialData: ReceiptScanResult
+  // Callback saat user konfirmasi
   onConfirm: (data: ConfirmedReceipt) => void
+  // Judul opsional
   title?: string
+  // Label tombol konfirmasi
   confirmLabel?: string
 }
 
+// Helper format rupiah
 function formatRupiah(value: number) {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -40,51 +50,71 @@ function formatRupiah(value: number) {
   }).format(value || 0)
 }
 
+// Komponen untuk review dan edit hasil scan nota
 export function ReceiptReview({
   initialData,
   onConfirm,
   title = "Konfirmasi Hasil Scan",
   confirmLabel = "Konfirmasi Hasil Scan",
 }: ReceiptReviewProps) {
+  // State nama merchant
   const [merchantName, setMerchantName] = useState(
     initialData.merchant_name || ""
   )
+  // State daftar item
   const [items, setItems] = useState<ReceiptItem[]>(initialData.items || [])
+  // State pajak
   const [tax, setTax] = useState(initialData.tax || 0)
+  // State service charge
   const [serviceCharge, setServiceCharge] = useState(
     initialData.service_charge || 0
   )
+  // State diskon
   const [discount, setDiscount] = useState(initialData.discount || 0)
 
+  // Hitung subtotal dari semua item
   const subtotal = items.reduce((sum, item) => {
     return sum + Number(item.subtotal || 0)
   }, 0)
 
-  const grandTotal = subtotal + Number(tax) + Number(serviceCharge) - Number(discount)
+  // Hitung total akhir
+  const grandTotal =
+    subtotal + Number(tax) + Number(serviceCharge) - Number(discount)
 
+  // Update data item tertentu
   function updateItem(index: number, field: keyof ReceiptItem, value: string) {
+    // Update array item secara immutable
     setItems((currentItems) => {
+      // Salin array item
       const updatedItems = [...currentItems]
+      // Salin item yang akan diubah
       const currentItem = { ...updatedItems[index] }
 
+      // Jika field nama, simpan string
       if (field === "name") {
         currentItem.name = value
       } else {
+        // Jika field angka, ubah ke number
         const numericValue = Number(value || 0)
         currentItem[field] = numericValue as never
 
+        // Jika qty atau harga berubah, hitung ulang subtotal
         if (field === "quantity" || field === "unit_price") {
           currentItem.subtotal =
-            Number(currentItem.quantity || 0) * Number(currentItem.unit_price || 0)
+            Number(currentItem.quantity || 0) *
+            Number(currentItem.unit_price || 0)
         }
       }
 
+      // Simpan item yang sudah diubah
       updatedItems[index] = currentItem
       return updatedItems
     })
   }
 
+  // Tambah item baru
   function addItem() {
+    // Tambahkan item kosong ke list
     setItems((currentItems) => [
       ...currentItems,
       {
@@ -97,24 +127,29 @@ export function ReceiptReview({
     ])
   }
 
+  // Hapus item berdasarkan index
   function removeItem(index: number) {
     setItems((currentItems) => currentItems.filter((_, i) => i !== index))
   }
 
-    function handleConfirm() {
+  // Kirim data yang sudah dikonfirmasi
+  function handleConfirm() {
+    // Susun data final
     const confirmedReceipt: ConfirmedReceipt = {
-        merchant_name: merchantName,
-        items,
-        subtotal,
-        tax,
-        service_charge: serviceCharge,
-        discount,
-        grand_total: grandTotal,
+      merchant_name: merchantName,
+      items,
+      subtotal,
+      tax,
+      service_charge: serviceCharge,
+      discount,
+      grand_total: grandTotal,
     }
 
+    // Panggil callback parent
     onConfirm(confirmedReceipt)
-    }
+  }
 
+  // Tampilan UI
   return (
     <Card>
       <CardHeader>
@@ -122,6 +157,7 @@ export function ReceiptReview({
       </CardHeader>
 
       <CardContent className="space-y-6">
+        {/* Input nama merchant */}
         <div className="space-y-2">
           <Label>Nama Merchant / Restoran</Label>
           <Input
@@ -131,6 +167,7 @@ export function ReceiptReview({
           />
         </div>
 
+        {/* Tabel daftar item */}
         <div className="rounded-lg border">
           <Table>
             <TableHeader>
@@ -144,9 +181,11 @@ export function ReceiptReview({
             </TableHeader>
 
             <TableBody>
+              {/* Loop item dari state */}
               {items.map((item, index) => (
                 <TableRow key={index}>
                   <TableCell>
+                    {/* Input nama item */}
                     <Input
                       value={item.name}
                       onChange={(event) =>
@@ -157,6 +196,7 @@ export function ReceiptReview({
                   </TableCell>
 
                   <TableCell>
+                    {/* Input qty item */}
                     <Input
                       type="number"
                       min="1"
@@ -168,6 +208,7 @@ export function ReceiptReview({
                   </TableCell>
 
                   <TableCell>
+                    {/* Input harga satuan */}
                     <Input
                       type="number"
                       min="0"
@@ -179,6 +220,7 @@ export function ReceiptReview({
                   </TableCell>
 
                   <TableCell>
+                    {/* Input subtotal item */}
                     <Input
                       type="number"
                       min="0"
@@ -190,6 +232,7 @@ export function ReceiptReview({
                   </TableCell>
 
                   <TableCell>
+                    {/* Tombol hapus item */}
                     <Button
                       type="button"
                       variant="destructive"
@@ -202,6 +245,7 @@ export function ReceiptReview({
                 </TableRow>
               ))}
 
+              {/* Tampilkan pesan jika kosong */}
               {items.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center text-slate-500">
@@ -213,10 +257,12 @@ export function ReceiptReview({
           </Table>
         </div>
 
+        {/* Tombol tambah item */}
         <Button type="button" variant="outline" onClick={addItem}>
           Tambah Item
         </Button>
 
+        {/* Input pajak, service, diskon */}
         <div className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
             <Label>Pajak</Label>
@@ -251,6 +297,7 @@ export function ReceiptReview({
           </div>
         </div>
 
+        {/* Ringkasan perhitungan */}
         <div className="rounded-lg bg-slate-100 p-4 space-y-2 text-sm">
           <div className="flex justify-between">
             <span>Subtotal Item</span>
@@ -278,6 +325,7 @@ export function ReceiptReview({
           </div>
         </div>
 
+        {/* Tombol konfirmasi */}
         <Button type="button" className="w-full" onClick={handleConfirm}>
           {confirmLabel}
         </Button>

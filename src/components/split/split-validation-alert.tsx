@@ -1,16 +1,23 @@
+// Ambil tipe validasi split
 import type { SplitValidation } from "./types"
 
+// Props untuk komponen alert validasi
 type SplitValidationAlertProps = {
+  // Data validasi dari hasil pembagian
   validation: SplitValidation
 }
 
+// Komponen untuk menampilkan peringatan pembagian
 export function SplitValidationAlert({ validation }: SplitValidationAlertProps) {
+  // Jika semua lengkap, tidak tampilkan apa-apa
   if (validation.isComplete) {
     return null
   }
 
+  // Tampilkan kotak peringatan
   return (
     <div className="rounded-md border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-700">
+      {/* Tampilkan item yang belum dibagi */}
       {validation.unassignedItems.length > 0 && (
         <p>
           Masih ada item yang belum dibagi:{" "}
@@ -18,6 +25,7 @@ export function SplitValidationAlert({ validation }: SplitValidationAlertProps) 
         </p>
       )}
 
+      {/* Tampilkan item yang kebanyakan dibagi */}
       {validation.overAssignedItems.length > 0 && (
         <p>
           Ada item yang jumlah pembagiannya melebihi qty:{" "}
